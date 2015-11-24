@@ -1,0 +1,23 @@
+---
+# domain: (required)
+# main_user_name: (required)
+admin_email: "{{ main_user_name }}@{{ domain }}"
+friendly_networks:
+  - ""
+
+# database
+db_admin_username: 'postgres'
+# db_admin_password: (required)
+
+# mailserver
+mail_server_hostname: "mail.{{ domain }}"
+mail_server_autoconfig_hostname: "autoconfig.{{ domain }}"
+mail_db_username: mailuser
+# mail_db_password: (required)
+mail_db_database: mailserver
+# mail_virtual_domains: (required)
+# mail_virtual_users: (required)
+# mail_virtual_aliases: (required)
+mail_db_opendmarc_username: opendmarc
+# mail_db_opendmarc_password: (required)
+mail_db_opendmarc_database: opendmarc

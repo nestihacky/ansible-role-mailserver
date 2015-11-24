@@ -1,0 +1,39 @@
+- name: Install dspam and related packages
+  yum: name={{ item }} state=present
+  with_items:
+    - dspam
+    - dspam-hash
+    - dspam-pgsql
+  tags:
+    - dependencies
+
+- name: Add dspam to the vmail group
+  user: name=dspam groups=vmail append=yes
+
+- name: Make /decrypted accessible to dspam
+  file: state=directory path=/decrypted owner=vmail group=dspam mode=710
+
+- name: Create dspam directory
+  file: state=directory path=/decrypted/dspam group=dspam owner=dspam
+
+- name: Put dspam configuration files in place
+  copy: src=etc_dspam.conf dest=/etc/dspam.conf owner=dspam group=dspam
+  notify:
+    - restart postfix
+    - restart dovecot
+    - restart dspam
+    #XXX all needed?
+
+- name: Put dspam postfix configuration in place
+  copy: src=etc_postfix_dspam_filter_access dest=/etc/postfix/dspam_filter_access owner=root group=root
+  notify: restart postfix
+
+- name: Put dspam dovecot configuration in place
+  copy: src=etc_dovecot_conf.d_{{ item }} dest=/etc/dovecot/conf.d/{{ item }} owner=vmail group=dovecot
+  with_items:
+    - 20-imap.conf
+    - 90-plugin.conf
+  notify: restart dovecot
+
+- name: Enable and start dspam
+  service: name=dspam state=started enabled=yes

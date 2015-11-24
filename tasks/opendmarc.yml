@@ -1,0 +1,48 @@
+- name: Install OpenDMARC milter and related packages
+  yum: name={{ item }} state=present
+  with_items:
+      - opendmarc
+      - mariadb-server
+      - MySQL-python
+  tags:
+    - dependencies
+
+- name: Configure mariadb to not allow network access
+  ini_file:
+      dest: /etc/my.cnf.d/server.cnf
+      section: server
+      option: skip_networking
+      value: "1"
+  notify: restart mariadb
+
+- name: Enable and start mariadb
+  service: name=mariadb state=started enabled=yes
+
+- name: Copy OpenDMARC configuration file into place
+  template: src=etc_opendmarc.conf.j2 dest=/etc/opendmarc.conf owner=root group=root
+  notify: restart opendmarc
+
+- name: Copy OpenDMARC ignore hosts file into place
+  template: src=etc_opendmarc_ignore.hosts.j2 dest=/etc/opendmarc/ignore.hosts owner=root group=root
+
+- name: Create database user for OpenDMARC reports
+  mysql_user: user={{ mail_db_opendmarc_username }} password={{ mail_db_opendmarc_password }} state=present priv="opendmarc.*:ALL"
+
+- name: Create database for OpenDMARC reports
+  mysql_db: name={{ mail_db_opendmarc_database }} state=present
+
+- name: Copy OpenDMARC database schema file into place
+  copy: src=etc_opendmarc_import.sql dest=/etc/opendmarc/import.sql owner=root group=root mode=0600
+  notify: import sql opendmarc
+
+- name: Copy nightly OpenDMARC report generation script into place
+  template: src=etc_opendmarc_report.sh.j2 dest=/etc/opendmarc/report.sh owner=root group=root mode="755"
+
+- name: Touch initial report dat file with correct permissions
+  file: path=/var/run/opendmarc/opendmarc.dat state=touch owner=opendmarc group=opendmarc
+
+- name: Activate OpenDMARC report cronjob
+  cron: name="OpenDMARC report" hour="2" minute="0" job="/bin/bash /etc/opendmarc/report.sh >> /var/log/opendmarc_report.log"
+
+- name: Enable and start opendmarc
+  service: name=opendmarc state=started enabled=yes

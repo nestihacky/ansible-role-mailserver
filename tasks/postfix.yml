@@ -1,0 +1,91 @@
+- name: Install Postgres
+  yum: name={{ item }} state=present
+  with_items:
+    - postgresql-server
+    - python-psycopg2
+  tags:
+    - dependencies
+
+- name: Check if Postgres is initialized
+  stat: path=/var/lib/pgsql/data/PG_VERSION
+  register: pg_setup
+
+- name: Initialize Postgres
+  command: /usr/bin/postgresql-setup initdb
+  when: pg_setup.stat.exists == False
+
+- name: Configure Postgres
+  copy: src=pg_hba.conf dest=/var/lib/pgsql/data/pg_hba.conf owner=postgres group=postgres
+  notify: reload postgres
+
+- name: Enable and start Postgres
+  service: name=postgresql state=started enabled=yes
+
+# RH Postfix does not have pgsql support, we have to install it from centosplus
+- name: Install Postfix and related packages
+  yum: name={{ item }} state=present enablerepo=centosplus
+  with_items:
+    - postfix*el7.centos
+    - postgrey
+  tags:
+    - dependencies
+
+- name: Set postgres password
+  command: psql -d {{ db_admin_username }} -c "ALTER USER postgres with  password '{{ db_admin_password }}';"
+  sudo: yes
+  sudo_user: "{{ db_admin_username }}"
+  notify: import sql postfix
+
+- name: Create database user for mail server
+  postgresql_user: name={{ mail_db_username }} password="{{ mail_db_password }}" state=present
+  sudo: yes
+  sudo_user: "{{ db_admin_username }}"
+  notify: import sql postfix
+
+- name: Create database for mail server
+  postgresql_db: name={{ mail_db_database }} state=present owner={{ mail_db_username }}
+  sudo: yes
+  sudo_user: "{{ db_admin_username }}"
+  notify: import sql postfix
+
+- name: Copy import.sql
+  template: src=mailserver.sql.j2 dest=/etc/postfix/import.sql owner=root group=root mode=0600
+  notify: import sql postfix
+
+- name: Create postfix maps directory
+  file: path=/etc/postfix/maps state=directory owner=root group=root
+  when: mail_header_privacy == 1
+
+- name: Copy smtp_header_checks.pcre
+  copy: src=etc_postfix_maps_smtp_header_checks.pcre dest=/etc/postfix/maps/smtp_header_checks.pcre owner=root group=root
+  when: mail_header_privacy == 1
+
+- name: Copy main.cf
+  template: src=etc_postfix_main.cf.j2 dest=/etc/postfix/main.cf owner=root group=root
+  notify: restart postfix
+
+- name: Copy master.cf
+  copy: src=etc_postfix_master.cf dest=/etc/postfix/master.cf owner=root group=root
+  notify: restart postfix
+
+- name: Copy additional postfix configuration files
+  template: src=etc_postfix_{{ item }}.j2 dest=/etc/postfix/{{ item }} owner=root group=root
+  with_items:
+    - pgsql-virtual-alias-maps.cf
+    - pgsql-virtual-mailbox-domains.cf
+    - pgsql-virtual-mailbox-maps.cf
+  notify: restart postfix
+
+- name: Enable and start Postgrey
+  service: name=postgrey state=started enabled=yes
+
+- name: Enable and start Postfix
+  service: name=postfix state=started enabled=yes
+
+- name: Allow SMTP in firewalld
+  firewalld: port={{ item }}/tcp state=enabled permanent=yes immediate=yes
+  with_items:
+    - smtp
+    - smtps
+  tags:
+    - firewalld

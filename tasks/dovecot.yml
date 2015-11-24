@@ -1,0 +1,59 @@
+- name: Install Dovecot and related packages
+  yum: name={{ item }} state=present
+  with_items:
+    - dovecot
+    - dovecot-pgsql
+    - dovecot-pigeonhole
+  tags:
+    - dependencies
+
+- name: Enable and start Dovecot
+  service: name=dovecot state=started enabled=yes
+
+- name: Create vmail group
+  group: name=vmail state=present gid=5000
+
+- name: Create vmail user
+  user: name=vmail group=vmail state=present uid=5000 home=/decrypted shell=/usr/sbin/nologin
+
+- name: Ensure mail domain directories are in place
+  file: state=directory path=/decrypted/{{ item.name }} owner=vmail group=dovecot mode=770
+  with_items: mail_virtual_domains
+
+- name: Ensure mail directories are in place
+  file: state=directory path=/decrypted/{{ item.domain }}/{{ item.account }} owner=vmail group=dovecot
+  with_items: mail_virtual_users
+
+- name: Copy dovecot.conf into place
+  copy: src=etc_dovecot_dovecot.conf dest=/etc/dovecot/dovecot.conf
+
+- name: Copy additional Dovecot configuration files in place
+  copy: src=etc_dovecot_conf.d_{{ item }} dest=/etc/dovecot/conf.d/{{ item }}
+  with_items:
+    - 10-auth.conf
+    - 10-mail.conf
+    - 10-master.conf
+    - 10-ssl.conf
+    - auth-sql.conf.ext
+  notify: restart dovecot
+
+- name: Template 15-lda.conf
+  template: src=etc_dovecot_conf.d_15-lda.conf.j2 dest=/etc/dovecot/conf.d/15-lda.conf
+  notify: restart dovecot
+
+- name: Template dovecot-sql.conf.ext
+  template: src=etc_dovecot_dovecot-sql.conf.ext.j2 dest=/etc/dovecot/dovecot-sql.conf.ext
+  notify: restart dovecot
+
+- name: Ensure correct permissions on Dovecot config directory
+  file: state=directory path=/etc/dovecot
+          group=dovecot owner=vmail mode=770 recurse=yes
+  notify: restart dovecot
+
+- name: Allow POP3S/IMAPS in firewalld
+  firewalld: service={{ item }} state=enabled permanent=yes immediate=yes
+  with_items:
+    - pop3s
+    - imaps
+  tags:
+    - firewalld
