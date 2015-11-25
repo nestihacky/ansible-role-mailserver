@@ -12,6 +12,9 @@ protocol imap {
   # NOTE: The username is compared case-sensitively.
   #mail_max_userip_connections = 10
 
+  # For dovecot-imap
+  mail_plugin_dir = /usr/lib64/dovecot/imap
+
   # Space separated list of plugins to load (default is global mail_plugins).
   #mail_plugins = $mail_plugins antispam fts fts_solr
   mail_plugins = $mail_plugins antispam
