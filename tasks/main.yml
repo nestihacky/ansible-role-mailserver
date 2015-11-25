@@ -4,7 +4,6 @@
 - include: opendmarc.yml tags=dmarc
 - include: dspam.yml tags=dspam
 #- include: solr.yml tags=solr
-#- include: checkrbl.yml tags=checkrbl
-#https://github.com/DjinnS/check-rbl/blob/master/check-rbl.pl
+- include: checkrbl.yml tags=checkrbl
 #- include: z-push.yml tags=zpush
 #- include: autoconfig.yml tags=autoconfig
