@@ -1,9 +1,15 @@
+- name: Add COPR repositroy with dovecot-antispam
+  copy: src=etc_yum.repos.d_mmilata-dovecot-antispam.repo dest=/etc/yum.repos.d/mmilata-dovecot-antispam.repo
+  tags:
+    - dependencies
+
 - name: Install dspam and related packages
-  yum: name={{ item }} state=present
+  yum: name={{ item }} state=present enablerepo=mmilata-dovecot-antispam
   with_items:
     - dspam
     - dspam-hash
     - dspam-pgsql
+    - dovecot-antispam
   tags:
     - dependencies
 
@@ -17,12 +23,8 @@
   file: state=directory path=/decrypted/dspam group=dspam owner=dspam
 
 - name: Put dspam configuration files in place
-  copy: src=etc_dspam.conf dest=/etc/dspam.conf owner=dspam group=dspam
-  notify:
-    - restart postfix
-    - restart dovecot
-    - restart dspam
-    #XXX all needed?
+  copy: src=etc_dspam.conf dest=/etc/dspam.conf owner=dspam group=dspam mode=644
+  notify: restart dspam
 
 - name: Put dspam postfix configuration in place
   copy: src=etc_postfix_dspam_filter_access dest=/etc/postfix/dspam_filter_access owner=root group=root
@@ -32,6 +34,7 @@
   copy: src=etc_dovecot_conf.d_{{ item }} dest=/etc/dovecot/conf.d/{{ item }} owner=vmail group=dovecot
   with_items:
     - 20-imap.conf
+      #^ FIXME: should be template
     - 90-plugin.conf
   notify: restart dovecot
 
