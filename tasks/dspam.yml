@@ -31,11 +31,11 @@
   notify: restart postfix
 
 - name: Put dspam dovecot configuration in place
-  copy: src=etc_dovecot_conf.d_{{ item }} dest=/etc/dovecot/conf.d/{{ item }} owner=vmail group=dovecot
-  with_items:
-    - 20-imap.conf
-      #^ FIXME: should be template
-    - 90-plugin.conf
+  copy: src=etc_dovecot_conf.d_90-plugin.conf dest=/etc/dovecot/conf.d/90-plugin.conf owner=vmail group=dovecot
+  notify: restart dovecot
+
+- name: Put more dspam dovecot configuration in place
+  template: src=etc_dovecot_conf.d_20-imap.conf.j2 dest=/etc/dovecot/conf.d/20-imap.conf owner=vmail group=dovecot
   notify: restart dovecot
 
 - name: Enable and start dspam
