@@ -11,13 +11,13 @@
   service: name=tomcat6 state=restarted
 
 - name: import sql postfix
-  shell: psql -h localhost -d {{ mail_db_database }} -U {{ mail_db_username }} -f /etc/postfix/import.sql --set ON_ERROR_STOP=1
+  shell: psql -h localhost -d {{ mailserver_db_database }} -U {{ mailserver_db_username }} -f /etc/postfix/import.sql --set ON_ERROR_STOP=1
   environment:
-    PGPASSWORD: '{{ mail_db_password }}'
+    PGPASSWORD: '{{ mailserver_db_password }}'
   notify: restart postfix
 
 - name: import sql opendmarc
-  mysql_db: name={{ mail_db_opendmarc_database }} state=import target=/etc/opendmarc/import.sql
+  mysql_db: name={{ mailserver_opendmarc_db_database }} state=import target=/etc/opendmarc/import.sql
   tags: import_mysql_postfix
 
 - name: restart opendmarc

@@ -26,10 +26,10 @@
   template: src=etc_opendmarc_ignore.hosts.j2 dest=/etc/opendmarc/ignore.hosts owner=root group=root
 
 - name: Create database user for OpenDMARC reports
-  mysql_user: user={{ mail_db_opendmarc_username }} password={{ mail_db_opendmarc_password }} state=present priv="opendmarc.*:ALL"
+  mysql_user: user={{ mailserver_opendmarc_db_username }} password={{ mailserver_opendmarc_db_password }} state=present priv="opendmarc.*:ALL"
 
 - name: Create database for OpenDMARC reports
-  mysql_db: name={{ mail_db_opendmarc_database }} state=present
+  mysql_db: name={{ mailserver_opendmarc_db_database }} state=present
 
 - name: Copy OpenDMARC database schema file into place
   copy: src=etc_opendmarc_import.sql dest=/etc/opendmarc/import.sql owner=root group=root mode=0600

@@ -31,21 +31,21 @@
     - dependencies
 
 - name: Set postgres password
-  command: psql -d {{ db_admin_username }} -c "ALTER USER postgres with  password '{{ db_admin_password }}';"
+  command: psql -d {{ mailserver_db_admin_username }} -c "ALTER USER postgres with  password '{{ mailserver_db_admin_password }}';"
   sudo: yes
-  sudo_user: "{{ db_admin_username }}"
+  sudo_user: "{{ mailserver_db_admin_username }}"
   notify: import sql postfix
 
 - name: Create database user for mail server
-  postgresql_user: name={{ mail_db_username }} password="{{ mail_db_password }}" state=present
+  postgresql_user: name={{ mailserver_db_username }} password="{{ mailserver_db_password }}" state=present
   sudo: yes
-  sudo_user: "{{ db_admin_username }}"
+  sudo_user: "{{ mailserver_db_admin_username }}"
   notify: import sql postfix
 
 - name: Create database for mail server
-  postgresql_db: name={{ mail_db_database }} state=present owner={{ mail_db_username }}
+  postgresql_db: name={{ mailserver_db_database }} state=present owner={{ mailserver_db_username }}
   sudo: yes
-  sudo_user: "{{ db_admin_username }}"
+  sudo_user: "{{ mailserver_db_admin_username }}"
   notify: import sql postfix
 
 - name: Copy import.sql
@@ -54,11 +54,11 @@
 
 - name: Create postfix maps directory
   file: path=/etc/postfix/maps state=directory owner=root group=root
-  when: mail_header_privacy == 1
+  when: mailserver_header_privacy
 
 - name: Copy smtp_header_checks.pcre
   copy: src=etc_postfix_maps_smtp_header_checks.pcre dest=/etc/postfix/maps/smtp_header_checks.pcre owner=root group=root
-  when: mail_header_privacy == 1
+  when: mailserver_header_privacy
 
 - name: Copy main.cf
   template: src=etc_postfix_main.cf.j2 dest=/etc/postfix/main.cf owner=root group=root

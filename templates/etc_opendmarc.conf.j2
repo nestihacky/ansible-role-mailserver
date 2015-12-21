@@ -5,7 +5,7 @@
 ##  AuthservID (string)
 ##      defaults to MTA name
 #
-AuthservID {{ mail_server_hostname }}
+AuthservID {{ mailserver_hostname }}
 
 ##  ForensicReports { true | false }
 ##      default "false"
@@ -58,7 +58,7 @@ Syslog true
 ##  with a comma.  The key word "HOSTNAME" will be replaced by the name of
 ##  the host running the filter as reported by the gethostname(3) function.
 #
-TrustedAuthservIDs {{ mail_server_hostname }}
+TrustedAuthservIDs {{ mailserver_hostname }}
 
 
 ##  UMask mask

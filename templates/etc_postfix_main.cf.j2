@@ -78,13 +78,13 @@ smtpd_recipient_restrictions =
 # See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
 # information on enabling SSL in the smtp client.
 
-myhostname = {{ mail_server_hostname }}
+myhostname = {{ mailserver_hostname }}
 myorigin = $mydomain
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 mydestination = localhost
 relayhost =
-mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 {{ ' '.join(friendly_networks) }}
+mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 {{ ' '.join(mailserver_friendly_networks) }}
 #mailbox_command = procmail -a "$EXTENSION"
 mailbox_size_limit = 0
 recipient_delimiter = +
@@ -123,7 +123,7 @@ postscreen_dnsbl_threshold = 3
 postscreen_dnsbl_action = enforce
 postscreen_greet_action = enforce
 
-{% if mail_header_privacy == 1 %}
+{% if mailserver_header_privacy %}
 # Remove local client IP from headers
 smtp_header_checks = pcre:/etc/postfix/maps/smtp_header_checks.pcre
 {% endif %}

@@ -1,23 +1,24 @@
 ---
-# domain: (required)
-# main_user_name: (required)
-admin_email: "{{ main_user_name }}@{{ domain }}"
-friendly_networks:
-  - ""
-
 # database
-db_admin_username: 'postgres'
-# db_admin_password: (required)
+mailserver_db_admin_username: postgres
+# mailserver_db_admin_password: (required) (but why)
 
 # mailserver
-mail_server_hostname: "mail.{{ domain }}"
-mail_server_autoconfig_hostname: "autoconfig.{{ domain }}"
-mail_db_username: mailuser
-# mail_db_password: (required)
-mail_db_database: mailserver
-# mail_virtual_domains: (required)
-# mail_virtual_users: (required)
-# mail_virtual_aliases: (required)
-mail_db_opendmarc_username: opendmarc
-# mail_db_opendmarc_password: (required)
-mail_db_opendmarc_database: opendmarc
+mailserver_db_username: mailuser
+# mailserver_db_password: (required)
+mailserver_db_database: mailserver
+
+mailserver_opendmarc_db_username: opendmarc
+# mailserver_opendmarc_db_password: (required)
+mailserver_opendmarc_db_database: opendmarc
+
+# mailserver_admin_email: (required)
+# mailserver_hostname: (required)
+#mailserver_autoconfig_hostname: autoconfig.{{ mailserver_hostname }}
+
+mailserver_friendly_networks: []
+mailserver_header_privacy: true
+
+# mailserver_domains: (required)
+# mailserver_users: (required)
+# mailserver_aliases: (required)
