@@ -16,14 +16,14 @@
 - name: Add dspam to the vmail group
   user: name=dspam groups=vmail append=yes
 
-- name: Make /decrypted accessible to dspam
-  file: state=directory path=/decrypted owner=vmail group=dspam mode=710
+- name: Make data dir accessible to dspam
+  file: state=directory path={{ mailserver_data_dir }} owner=vmail group=dspam mode=710
 
 - name: Create dspam directory
-  file: state=directory path=/decrypted/dspam group=dspam owner=dspam
+  file: state=directory path={{ mailserver_data_dir }}/dspam group=dspam owner=dspam
 
 - name: Put dspam configuration files in place
-  copy: src=etc_dspam.conf dest=/etc/dspam.conf owner=dspam group=dspam mode=644
+  template: src=etc_dspam.conf.j2 dest=/etc/dspam.conf owner=dspam group=dspam mode=644
   notify: restart dspam
 
 - name: Put dspam postfix configuration in place

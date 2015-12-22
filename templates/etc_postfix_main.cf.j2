@@ -40,15 +40,15 @@ smtpd_tls_mandatory_protocols=!SSLv2,!SSLv3
 smtp_tls_mandatory_protocols=!SSLv2,!SSLv3
 smtp_tls_protocols = !SSLv2,!SSLv3
 smtpd_tls_protocols = !SSLv2,!SSLv3
-smtpd_tls_cert_file=/etc/pki/tls/certs/wildcard_combined.pem
-smtpd_tls_key_file=/etc/pki/tls/private/wildcard_private.key
-smtpd_use_tls=yes
+smtpd_tls_cert_file = {{ mailserver_ssl_cert }}
+smtpd_tls_key_file = {{ mailserver_ssl_key }}
+smtp_tls_CAfile = {{ mailserver_ssl_ca }}
+smtpd_use_tls = yes
 smtpd_tls_auth_only = yes
 smtp_tls_security_level = may
 smtp_tls_loglevel = 2
 smtpd_tls_received_header = yes
 smtp_tls_note_starttls_offer = yes
-smtp_tls_CAfile = /etc/pki/tls/certs/ca-bundle.crt
 # http://www.postfix.org/FORWARD_SECRECY_README.html
 smtp_tls_ciphers = medium
 
