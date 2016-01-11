@@ -41,6 +41,7 @@
     - 10-mail.conf
     - 10-ssl.conf
     - 15-lda.conf
+    - 90-sieve.conf
   notify: restart dovecot
 
 - name: Template dovecot-sql.conf.ext
