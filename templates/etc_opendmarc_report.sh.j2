@@ -5,7 +5,7 @@ DB_USER='{{ mailserver_opendmarc_db_username }}'
 DB_PASS='{{ mailserver_opendmarc_db_password }}'
 DB_NAME='{{ mailserver_opendmarc_db_database }}'
 WORK_DIR='/var/run/opendmarc'
-REPORT_EMAIL='{{ admin_email }}'
+REPORT_EMAIL='{{ mailserver_admin_email }}'
 
 mv ${WORK_DIR}/opendmarc.dat ${WORK_DIR}/opendmarc_import.dat -f
 touch ${WORK_DIR}/opendmarc.dat
