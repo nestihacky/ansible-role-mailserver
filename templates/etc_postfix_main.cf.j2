@@ -79,10 +79,11 @@ smtpd_recipient_restrictions =
 # information on enabling SSL in the smtp client.
 
 myhostname = {{ mailserver_hostname }}
+mydomain = {{ mailserver_domain }}
 myorigin = $mydomain
-alias_maps = hash:/etc/aliases
+alias_maps = hash:/etc/aliases {{ postfix_alias_maps_append }}
 alias_database = hash:/etc/aliases
-mydestination = localhost
+mydestination = localhost {{ postfix_mydestination_append }}
 relayhost =
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 {{ ' '.join(mailserver_friendly_networks) }}
 #mailbox_command = procmail -a "$EXTENSION"
@@ -98,7 +99,7 @@ dovecot_destination_recipient_limit = 1
 virtual_mailbox_domains = pgsql:/etc/postfix/pgsql-virtual-mailbox-domains.cf
 virtual_mailbox_maps = pgsql:/etc/postfix/pgsql-virtual-mailbox-maps.cf
 virtual_alias_maps = pgsql:/etc/postfix/pgsql-virtual-alias-maps.cf
-local_recipient_maps = $virtual_mailbox_maps
+local_recipient_maps = $virtual_mailbox_maps {{ postfix_local_recipient_maps_append }}
 
 # OpenDKIM and OpenDMARC
 smtpd_milters = inet:127.0.0.1:8891,inet:127.0.0.1:8893
