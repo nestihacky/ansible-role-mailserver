@@ -14,6 +14,7 @@ mailserver_opendmarc_db_database: opendmarc
 
 # mailserver_admin_email: (required)
 # mailserver_hostname: (required)
+# mailserver_domain: (required, typically mailserver_hostname minus the first component)
 #mailserver_autoconfig_hostname: autoconfig.{{ mailserver_hostname }}
 
 mailserver_friendly_networks: []
@@ -31,3 +32,8 @@ mailserver_ssl_key: /etc/pki/tls/private/wildcard_private.key
 
 # system CAs to verify other servers against
 mailserver_ssl_ca: /etc/pki/tls/certs/ca-bundle.crt
+
+# used by mailman
+postfix_alias_maps_append:
+postfix_local_recipient_maps_append:
+postfix_mydestination_append:

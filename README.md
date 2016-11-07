@@ -25,6 +25,7 @@ You need to set a couple of database credentials first.
 Server identity.
 
     mailserver_hostname: mail.example.org #required
+    mailserver_domain: example.org # required
     mailserver_admin_email: postmaster@example.org #required
 
 And the domains, mailboxes and aliases (all keys required).
