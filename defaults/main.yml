@@ -37,3 +37,6 @@ mailserver_ssl_ca: /etc/pki/tls/certs/ca-bundle.crt
 postfix_alias_maps_append:
 postfix_local_recipient_maps_append:
 postfix_mydestination_append:
+
+# used by pagure milter
+postfix_smtpd_milters_append:
