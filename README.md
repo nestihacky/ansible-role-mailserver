@@ -3,9 +3,6 @@ mailserver
 
 Email server for individuals and small groups. Works on RHEL/CentOS 7.
 
-Please note that this role installs and configures postgres and mysql and
-combining it with other roles that use them may not work very well.
-
 Role Variables
 --------------
 
@@ -29,6 +26,7 @@ Server identity.
     mailserver_admin_email: postmaster@example.org #required
 
 And the domains, mailboxes and aliases (all keys required).
+You can generate password hashes with `doveadm pw -s SHA512-CRYPT`.
 
     mailserver_domains:
       - name: example.org
@@ -58,10 +56,29 @@ Other variables (optional):
     mailserver_ssl_key: /etc/pki/tls/private/wildcard_private.key
     mailserver_ssl_ca: /etc/pki/tls/certs/ca-bundle.crt
 
+Client configuration
+--------------------
+
+* Use complete email address as user name e.g. alice@example.com instead of just alice.
+* Connection security: SSL/TLS
+* Authentication method: Normal password
+* IMAP (Dovecot) port: 993
+* SMTP (Postfix) port: 465
+
+Details
+-------
+
+* Primarily installs Dovecot and Postfix supported by Postgrey, OpenDKIM and dspam.
+* Uses virtual domain and user tables stored in PostgreSQL.
+* During role run `/etc/postfix/import.sql` is populated with account data reflecting your Ansible configuration,
+  this file is then imported - it drops all tables and recreates them if configuration has changed.
+
+
 Dependencies
 ------------
 
-None so far.
+* nestihacky.common https://github.com/nestihacky/ansible-role-common
+* nestihacky.postgresql https://github.com/nestihacky/ansible-role-postgresql
 
 Example Playbook
 ----------------
@@ -92,3 +109,4 @@ Links
 * https://blog.filippo.io/the-sad-state-of-smtp-encryption/
 * https://www.mail-tester.com/
 * https://www.port25.com/support/authentication-center/email-verification/
+* http://wiki2.dovecot.org/Authentication/PasswordSchemes

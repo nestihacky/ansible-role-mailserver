@@ -60,3 +60,4 @@
     - imaps
   tags:
     - firewalld
+  when: common_firewalld
