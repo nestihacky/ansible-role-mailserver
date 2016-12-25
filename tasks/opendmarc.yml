@@ -1,22 +1,14 @@
-- name: Install OpenDMARC milter and related packages
-  yum: name={{ item }} state=present
-  with_items:
-      - opendmarc
-      - mariadb-server
-      - MySQL-python
+- name: Add COPR repositroy with PostgreSQL enabled opendmarc
+  copy: src=etc_yum.repos.d_rmarko-opendmarc.repo dest=/etc/yum.repos.d/rmarko-opendmarc-epel-7.repo
   tags:
     - dependencies
 
-- name: Configure mariadb to not allow network access
-  ini_file:
-      dest: /etc/my.cnf.d/server.cnf
-      section: server
-      option: skip_networking
-      value: "1"
-  notify: restart mariadb
-
-- name: Enable and start mariadb
-  service: name=mariadb state=started enabled=yes
+- name: Install OpenDMARC milter and related packages
+  yum: name={{ item }} state=present enablerepo=rmarko-opendmarc
+  with_items:
+      - opendmarc-1.3.1pg
+  tags:
+    - dependencies
 
 - name: Copy OpenDMARC configuration file into place
   template: src=etc_opendmarc.conf.j2 dest=/etc/opendmarc.conf owner=root group=root
@@ -24,16 +16,6 @@
 
 - name: Copy OpenDMARC ignore hosts file into place
   template: src=etc_opendmarc_ignore.hosts.j2 dest=/etc/opendmarc/ignore.hosts owner=root group=root
-
-- name: Create database user for OpenDMARC reports
-  mysql_user: user={{ mailserver_opendmarc_db_username }} password={{ mailserver_opendmarc_db_password }} state=present priv="opendmarc.*:ALL"
-
-- name: Create database for OpenDMARC reports
-  mysql_db: name={{ mailserver_opendmarc_db_database }} state=present
-
-- name: Copy OpenDMARC database schema file into place
-  copy: src=etc_opendmarc_import.sql dest=/etc/opendmarc/import.sql owner=root group=root mode=0600
-  notify: import sql opendmarc
 
 - name: Copy nightly OpenDMARC report generation script into place
   template: src=etc_opendmarc_report.sh.j2 dest=/etc/opendmarc/report.sh owner=root group=root mode="755"

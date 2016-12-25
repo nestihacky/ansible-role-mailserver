@@ -18,11 +18,11 @@
 
 - name: Ensure mail domain directories are in place
   file: state=directory path={{ mailserver_data_dir }}/{{ item.name }} owner=vmail group=dovecot mode=770
-  with_items: mailserver_domains
+  with_items: "{{ mailserver_domains }}"
 
 - name: Ensure mail directories are in place
   file: state=directory path={{ mailserver_data_dir }}/{{ item.domain }}/{{ item.account }} owner=vmail group=dovecot
-  with_items: mailserver_users
+  with_items: "{{ mailserver_users }}"
 
 - name: Copy dovecot.conf into place
   copy: src=etc_dovecot_dovecot.conf dest=/etc/dovecot/dovecot.conf
@@ -60,3 +60,4 @@
     - imaps
   tags:
     - firewalld
+  when: common_firewalld
