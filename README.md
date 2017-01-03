@@ -81,11 +81,11 @@ Dependencies
 Example Playbook
 ----------------
 
-   ---
-   - hosts: mailserver
-     sudo: yes
-       roles:
-       - nestihacky.mailserver
+    ---
+    - hosts: mailserver
+      sudo: yes
+        roles:
+        - nestihacky.mailserver
 
 
 License
