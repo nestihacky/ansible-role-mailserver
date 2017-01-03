@@ -1,8 +1,4 @@
 ---
-# database
-mailserver_db_admin_username: postgres
-# mailserver_db_admin_password: (required) (but why)
-
 # mailserver
 mailserver_db_username: mailuser
 # mailserver_db_password: (required)

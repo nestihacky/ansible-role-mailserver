@@ -10,8 +10,6 @@ See also `defaults/main.yml`.
 
 You need to set a couple of database credentials first.
 
-    mailserver_db_admin_username: postgres
-    mailserver_db_admin_password: hunter2 #required
     mailserver_db_username: mailuser
     mailserver_db_password: hunter2 #required
     mailserver_db_database: mailserver
