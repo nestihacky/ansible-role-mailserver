@@ -11,10 +11,10 @@ See also `defaults/main.yml`.
 You need to set a couple of database credentials first.
 
     mailserver_db_username: mailuser
-    mailserver_db_password: hunter2 #required
+    mailserver_db_password: CHANGE_ME #required
     mailserver_db_database: mailserver
     mailserver_opendmarc_db_username: opendmarc
-    mailserver_opendmarc_db_password: hunter2 #required
+    mailserver_opendmarc_db_password: CHANGE_ME #required
     mailserver_opendmarc_db_database: opendmarc
 
 Server identity.
