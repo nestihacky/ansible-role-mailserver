@@ -112,4 +112,8 @@ Links
 * https://blog.filippo.io/the-sad-state-of-smtp-encryption/
 * https://www.mail-tester.com/
 * https://www.port25.com/support/authentication-center/email-verification/
+* https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy
 * http://wiki2.dovecot.org/Authentication/PasswordSchemes
+* SPF https://tools.ietf.org/html/rfc6652
+* DKIM https://tools.ietf.org/html/rfc6376
+* DMARC https://tools.ietf.org/html/rfc7489
