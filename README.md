@@ -10,13 +10,11 @@ See also `defaults/main.yml`.
 
 You need to set a couple of database credentials first.
 
-    mailserver_db_admin_username: postgres
-    mailserver_db_admin_password: hunter2 #required
     mailserver_db_username: mailuser
-    mailserver_db_password: hunter2 #required
+    mailserver_db_password: CHANGE_ME #required
     mailserver_db_database: mailserver
     mailserver_opendmarc_db_username: opendmarc
-    mailserver_opendmarc_db_password: hunter2 #required
+    mailserver_opendmarc_db_password: CHANGE_ME #required
     mailserver_opendmarc_db_database: opendmarc
 
 Server identity.
@@ -83,7 +81,12 @@ Dependencies
 Example Playbook
 ----------------
 
-TODO
+   ---
+   - hosts: mailserver
+     sudo: yes
+       roles:
+       - nestihacky.mailserver
+
 
 License
 -------
@@ -109,4 +112,8 @@ Links
 * https://blog.filippo.io/the-sad-state-of-smtp-encryption/
 * https://www.mail-tester.com/
 * https://www.port25.com/support/authentication-center/email-verification/
+* https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-dkim-with-postfix-on-debian-wheezy
 * http://wiki2.dovecot.org/Authentication/PasswordSchemes
+* SPF https://tools.ietf.org/html/rfc6652
+* DKIM https://tools.ietf.org/html/rfc6376
+* DMARC https://tools.ietf.org/html/rfc7489
