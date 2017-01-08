@@ -7,3 +7,4 @@
 - include: checkrbl.yml tags=checkrbl
 #- include: z-push.yml tags=zpush
 #- include: autoconfig.yml tags=autoconfig
+- include: maildns.yml tags=maildns
