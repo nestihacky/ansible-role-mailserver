@@ -8,3 +8,5 @@
 #- include: z-push.yml tags=zpush
 #- include: autoconfig.yml tags=autoconfig
 - include: maildns.yml tags=maildns
+- include: selinux.yml
+  when: common_selinux
