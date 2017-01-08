@@ -43,3 +43,7 @@ postfix_mydestination_append:
 
 # used by pagure milter
 postfix_smtpd_milters_append:
+
+semodule_dest: /opt/ansible-selinux-modules/
+mailserver_semodule_te:
+  - dovecotpgauth.te
