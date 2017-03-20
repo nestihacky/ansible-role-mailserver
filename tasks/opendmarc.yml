@@ -1,12 +1,12 @@
-- name: Add COPR repositroy with PostgreSQL enabled opendmarc
-  copy: src=etc_yum.repos.d_rmarko-opendmarc.repo dest=/etc/yum.repos.d/rmarko-opendmarc-epel-7.repo
+- name: Add COPR repository with PostgreSQL enabled opendmarc
+  copy: src=etc_yum.repos.d_mmilata-opendmarc.repo dest=/etc/yum.repos.d/mmilata-opendmarc-epel-7.repo
   tags:
     - dependencies
 
 - name: Install OpenDMARC milter and related packages
-  yum: name={{ item }} state=present enablerepo=rmarko-opendmarc
+  yum: name={{ item }} state=present enablerepo=mmilata-opendmarc
   with_items:
-      - opendmarc-1.3.1pg
+      - opendmarc
   tags:
     - dependencies
 
