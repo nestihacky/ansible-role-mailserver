@@ -17,7 +17,7 @@
   notify: restart postfix
 
 - name: import sql opendmarc
-  shell: psql -h localhost -d {{ mailserver_opendmarc_db_database }} -U {{ mailserver_opendmarc_db_username }} -f /usr/share/doc/opendmarc-1.3.1pg/schema.pgsql --set ON_ERROR_STOP=1
+  shell: psql -h localhost -d {{ mailserver_opendmarc_db_database }} -U {{ mailserver_opendmarc_db_username }} -f /usr/share/doc/opendmarc-*pg/schema.pgsql --set ON_ERROR_STOP=1
   environment:
     PGPASSWORD: '{{ mailserver_opendmarc_db_password }}'
 
